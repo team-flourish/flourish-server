@@ -10,6 +10,7 @@ colorama = "*"
 flask-sqlalchemy = "*"
 psycopg2 = "*"
 flask-pytest = "*"
+flask-migrate = "*"
 
 [dev-packages]
 pytest = "*"
