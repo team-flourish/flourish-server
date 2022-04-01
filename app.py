@@ -86,3 +86,7 @@ def radius_handler(user_id):
     }
     resp, code = fns[request.method](request, user_id)
     return jsonify(resp), code
+
+# boiler plate
+if __name__ == "__main__":
+    app.run(debug=True)
