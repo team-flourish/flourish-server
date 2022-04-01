@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug import exceptions
+from controllers import users
 
 app = Flask(__name__)
 CORS(app)
@@ -41,6 +42,7 @@ class Category(db.Model):
     category_id = db.Column(db.Integer, primary_key=True)
     category_name  = db.Column(db.String(100))
 
-@app.get('/')
-def index():
-  return 'Hello, world!'
+
+# boiler plate
+if __name__ == "__main__":
+    app.run(debug=True)
