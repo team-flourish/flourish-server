@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug import exceptions
+from controllers import users
 
 app = Flask(__name__)
 CORS(app)
@@ -68,15 +69,15 @@ def location_handler(user_id):
     return jsonify(resp), code
 
 @app.route('/users/<int:user_id>/product', methods=['GET'])
-def location_handler(user_id):
+def product_handler(user_id):
     fns = {
-        'PATCH': users.get_products,
+        'GET': users.get_products,
     }
     resp, code = fns[request.method](request, user_id)
     return jsonify(resp), code
 
 @app.route('/users/<int:user_id>/radius', methods=['PATCH'])
-def location_handler(user_id):
+def radius_handler(user_id):
     fns = {
         'PATCH': users.update_radius,
     }
