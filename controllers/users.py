@@ -47,6 +47,12 @@ def update_radius(req, uid):
     user['radius'] = req['radius']
     return user, 200
 
+def update_location(req, uid):
+    user = find_by_uid(uid)
+    req = req.get_json()
+    user['location'] = req['location']
+    return user, 200
+
 
 
 

@@ -48,6 +48,55 @@ def index():
 
 
 
+#working
+@app.route('/users/<int:user_id>/rating', methods=['POST'])
+def rating_handler(user_id):
+    fns = {
+        'POST': users.createRating
+    }
+    resp, code = fns[request.method](request, user_id)
+    return jsonify(resp), code
+
+#working
+@app.route('/users/<int:user_id>', methods=['GET', 'DELETE'])
+def user_handler(user_id):
+    fns = {
+        'GET': users.show_user_details,
+        'DELETE': users.destroy_user
+    }
+    resp, code = fns[request.method](request, user_id)
+    return jsonify(resp), code
+
+#working
+@app.route('/users/<int:user_id>/location', methods=['PATCH'])
+def location_handler(user_id):
+    fns = {
+        'PATCH': users.update_location,
+    }
+    resp, code = fns[request.method](request, user_id)
+    return jsonify(resp), code
+
+#working
+@app.route('/users/<int:user_id>/product', methods=['GET'])
+def product_handler(user_id):
+    fns = {
+        'GET': users.get_products,
+    }
+    resp, code = fns[request.method](request, user_id)
+    return jsonify(resp), code
+
+#working
+@app.route('/users/<int:user_id>/radius', methods=['PATCH'])
+def radius_handler(user_id):
+    fns = {
+        'PATCH': users.update_radius,
+    }
+    resp, code = fns[request.method](request, user_id)
+    return jsonify(resp), code
+
+
+
+
 # boiler plate
 if __name__ == "__main__":
     app.run(debug=True)
