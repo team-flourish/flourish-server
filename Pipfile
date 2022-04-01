@@ -6,6 +6,10 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-cors = "*"
+colorama = "*"
+flask-sqlalchemy = "*"
+psycopg2 = "*"
+flask-pytest = "*"
 
 [dev-packages]
 pytest = "*"
