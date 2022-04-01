@@ -40,7 +40,19 @@ Server-side repo for the Flourish group project. Main project repo can be found 
 
 ### API Routes
 
-<!-- API routes here -->
+| Route | Method | Description |
+| ----- | ------ | ----------- |
+| `/signup` | `POST` | Creates a user in the database |
+| `/login` | `POST` | Logs the user in by returning a token |
+| `/products` | `GET` | Show list of products available |
+| `/products` | `POST` | Create a new product in the database |
+| `/products/<product_id>` | `GET` | Shows information about a product |
+| `/users/<user_id>` | `GET` | Show details about a user |
+| `/users/<user_id>/products` | `GET` | Show list of user's products |
+| `/users/<user_id>/location` | `PATCH` | Change a user's location |
+| `/users/<user_id>/radius` | `PATCH` | Change a user's search radius |
+| `/users/<user_id>/rating` | `POST` | Give a user a rating |
+| `/users/<user_id>` | `DELETE` | Delete a user account |
 
 ## Changelog
 
