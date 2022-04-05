@@ -225,8 +225,8 @@ def getAllRatings():
             raise exceptions.InternalServerError()
 
 #get ratings by id of user rating them
-@main.get('ratings/users/<int:user_id>')
-def getRatingById(user_id):
+@main.get('/ratings/users/<int:user_id>')
+def getRatingByUserId(user_id):
     try: 
         rating = db.session.query(Productratings).filter(Productratings.user_id == user_id)
         return  jsonify([e.serialize() for e in rating])
@@ -236,7 +236,7 @@ def getRatingById(user_id):
         raise exceptions.InternalServerError()
 
 #get ratings by product id and id of user rating them
-@main.get('ratings/users/<int:user_id>/product/<int:product_id>')
+@main.get('/ratings/users/<int:user_id>/product/<int:product_id>')
 def getRatingById(user_id, product_id):
     try: 
         rating = db.session.query(Productratings).filter(Productratings.user_id == user_id).filter(Productratings.product_id == product_id)
