@@ -4,8 +4,8 @@ from flask_cors import CORS
 from werkzeug import exceptions
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flourish_app.extensions import db
-from flourish_app.models import Productratings, Products, Users, Category
+from .extensions import db
+from .models import Productratings, Products, Users, Category
 
 
 main = Blueprint('main', __name__) 
