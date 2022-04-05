@@ -23,6 +23,7 @@ pyjwt = "*"
 flask-jwt-extended = "*"
 flask-executor = "*"
 
+
 [dev-packages]
 
 [requires]
