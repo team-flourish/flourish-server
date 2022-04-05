@@ -9,12 +9,8 @@ from .extensions import db
 from .models import Productratings, Products, Users, Category
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required
 
-
-
-
 main = Blueprint('main', __name__) 
 CORS(main)
-
 
 # bcrypt = Bcrypt(main)
 # login_manager = LoginManager(main)
@@ -28,7 +24,7 @@ def hello():
 #@login_manager.user_loader  used to reload object from user id stored in session
 def load_user(user_id):
     return Users.query.get(int(user_id))
-JWTManager(main)
+
 #working
 @main.route("/login", methods = ['POST', "GET"])
 def login():
