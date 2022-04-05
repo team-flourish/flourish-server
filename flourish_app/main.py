@@ -52,7 +52,6 @@ def register():
         passwrd = hashed_password,
         email = req['email'],
         rating = 0,
-        rating_num = 0,
         longitude= 0,
         latitude= 0,
         radius = 2
