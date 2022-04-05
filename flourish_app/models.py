@@ -47,7 +47,7 @@ class Products(db.Model):
     expiry = db.Column(db.String(15))
     description = db.Column(db.String(100))
     image = db.Column(db.String(500))
-    date_time = db.Column(db.Date, nullable=False)
+    date_time = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, user_id, category_id, is_retail, longitude, latitude, price, expiry, description, image):
         self.user_id = user_id
