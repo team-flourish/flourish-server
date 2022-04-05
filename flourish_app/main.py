@@ -69,7 +69,7 @@ def logout():
 
 # get all products or post a product
 @main.route('/products', methods=['GET','POST'])
-@jwt_required()
+##@jwt_required()
 def getAllProducts():
     if request.method == 'GET':
         try: 
@@ -104,7 +104,7 @@ def getAllProducts():
 
 # get products by product id
 @main.get('/products/<int:product_id>')
-@jwt_required()
+##@jwt_required()
 def getProductById(product_id):
     try: 
         product = Products.query.get_or_404(product_id)
@@ -116,7 +116,7 @@ def getProductById(product_id):
 
 #wget products by category
 @main.get('/products/category/<int:category_id>')
-@jwt_required()
+##@jwt_required()
 def getProductByCategoryId(category_id):
     try: 
         products = db.session.query(Products).filter(Products.category_id == category_id)
@@ -128,7 +128,7 @@ def getProductByCategoryId(category_id):
 
 #get all users
 @main.get('/users')
-@jwt_required()
+##@jwt_required()
 def getAllUsers():
     try: 
         allUsers = Users.query.all()
@@ -140,7 +140,7 @@ def getAllUsers():
 
 # get all products a user has posted
 @main.get('/users/<int:user_id>/products')
-@jwt_required()
+#@jwt_required()
 def getAllUsersProductsById(user_id):
     try: 
         allUsersProducts = db.session.query(Products).filter(Products.user_id == user_id)
@@ -152,7 +152,7 @@ def getAllUsersProductsById(user_id):
 
 # get/delete user by id
 @main.route('/users/<int:user_id>', methods=['GET', 'DELETE'])
-@jwt_required()
+#@jwt_required()
 def handleUserById(user_id):
     if request.method == 'GET':
         try: 
@@ -165,7 +165,9 @@ def handleUserById(user_id):
     elif request.method == 'DELETE':
         try: 
             user = Users.query.get_or_404(user_id)
-            Users.remove(user)
+            
+            db.session.delete(user)
+            db.session.commit()
             return f"User was sucessfully deleted!", 204
         except exceptions.NotFound:
             raise exceptions.NotFound("User not found!")
@@ -174,7 +176,7 @@ def handleUserById(user_id):
 
 # if a user has not rated a product add that rating to the db, if they have patch their current rating with the new one
 @main.route('/rating/vote', methods= ['POST'])
-@jwt_required()
+#@jwt_required()
 def vote():
 
     if request.method == 'POST':
@@ -228,7 +230,7 @@ def vote():
 
 # get all ratings
 @main.route('/ratings',  methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def getAllRatings():
     if request.method == 'GET':
         try:
@@ -241,6 +243,7 @@ def getAllRatings():
 
 #get ratings by id of user rating them
 @main.get('/ratings/users/<int:user_id>')
+@jwt_required
 def getRatingByUserId(user_id):
     try: 
         rating = db.session.query(Productratings).filter(Productratings.user_id == user_id)
@@ -252,6 +255,7 @@ def getRatingByUserId(user_id):
 
 #get ratings by product id and id of user rating them
 @main.get('/ratings/users/<int:user_id>/products/<int:product_id>')
+#@jwt_required()
 def getRatingById(user_id, product_id):
     try: 
         rating = db.session.query(Productratings).filter(Productratings.user_id == user_id).filter(Productratings.product_id == product_id)
@@ -263,7 +267,7 @@ def getRatingById(user_id, product_id):
 
 # update location by user id
 @main.route('/users/<int:user_id>/location',  methods=['PATCH'])
-@jwt_required()
+#@jwt_required()
 def updateLocation(user_id):
     if request.method == 'PATCH':
         try: 
@@ -277,7 +281,7 @@ def updateLocation(user_id):
 
 # update radius by user id
 @main.route('/users/<int:user_id>/radius',  methods=['PATCH'])
-@jwt_required()
+##@jwt_required()
 def updateRadius(user_id):
     if request.method == 'PATCH':
         try: 
