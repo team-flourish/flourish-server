@@ -59,7 +59,7 @@ class Products(db.Model):
         self.expiry = expiry
         self.description = description
         self.image = image
-        self.date_time = datetime.utcnow().strftime('%m-%d-%Y')
+        self.date_time = datetime.utcnow()
 
     def __repr__(self):
         return '<id {}>'.format(self.product_id)

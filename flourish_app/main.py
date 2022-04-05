@@ -77,10 +77,10 @@ def getAllProducts():
 
             products_array = [e.serialize() for e in allProducts]
 
-            date = datetime.utcnow()
-            date_now = datetime.date(date)
+            date_now = datetime.utcnow()
+            print("date_now", date_now)
             date_minus_1 = date_now - timedelta(days=1)
-
+            print("minus", date_minus_1)
             products_to_send_arr = []
 
             for i in products_array:
@@ -90,12 +90,12 @@ def getAllProducts():
             return  jsonify(products_to_send_arr)
         except exceptions.NotFound:
             raise exceptions.NotFound("There are no products to view at the moment!")
-        except:
-            raise exceptions.InternalServerError()
+        # except:
+        #     raise exceptions.InternalServerError()
 
     elif request.method == 'POST':
     # format of request 
-    # { "user_id": 1, "description": "Tomatoes", "category_id": 2, "is_retail": 1, "longitude": 51.5014, "latitude": 0.1419, "price": 2.99, "expiry": "02/04/2022", "image": "LINK"}
+    # { "user_id": 1, "description": "Oranges", "category_id": 5, "is_retail": 0, "longitude": 51.5014, "latitude": 0.1419, "price": 2.99, "expiry": "07/04/2022", "image": "https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F19%2F2019%2F01%2F07%2Foranges-hero.jpg&q=60"}
         try:
             req = request.get_json()
             new_product = Products(
