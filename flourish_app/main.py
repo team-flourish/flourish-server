@@ -287,7 +287,7 @@ def updateLocation(user_id):
         try: 
             req = request.get_json()
             updated_longitude = req['updated_longitude']
-            updated_latitude = req['updated_longitude']
+            updated_latitude = req['updated_latitude']
             db.session.query(Users).filter(Users.id == user_id).update({Users.longitude: updated_longitude, Users.latitude: updated_latitude})
             db.session.commit()
             return f"Location sucessfully updated!", 201
