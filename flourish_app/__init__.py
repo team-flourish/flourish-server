@@ -7,7 +7,6 @@ from .main import main
 
 def create_app(config_file='settings.py'):
     app = Flask(__name__)
-
     JWTManager(app)
     # login_manager = LoginManager()
     # login_manager.init_app(app)
