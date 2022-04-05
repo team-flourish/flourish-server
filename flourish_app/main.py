@@ -224,7 +224,29 @@ def getAllRatings():
         except:
             raise exceptions.InternalServerError()
 
-#working
+#get ratings by id of user rating them
+@main.get('ratings/users/<int:user_id>')
+def getRatingById(user_id):
+    try: 
+        rating = db.session.query(Productratings).filter(Productratings.user_id == user_id)
+        return  jsonify([e.serialize() for e in rating])
+    except exceptions.NotFound:
+        raise exceptions.NotFound("There are no ratings to view at the moment!")
+    except:
+        raise exceptions.InternalServerError()
+
+#get ratings by product id and id of user rating them
+@main.get('ratings/users/<int:user_id>/product/<int:product_id>')
+def getRatingById(user_id, product_id):
+    try: 
+        rating = db.session.query(Productratings).filter(Productratings.user_id == user_id).filter(Productratings.product_id == product_id)
+        return  jsonify([e.serialize() for e in rating])
+    except exceptions.NotFound:
+        raise exceptions.NotFound("There are no ratings to view at the moment!")
+    except:
+        raise exceptions.InternalServerError()
+
+# update location by user id
 @main.route('/users/<int:user_id>/location',  methods=['PATCH'])
 def updateLocation(user_id):
     if request.method == 'PATCH':
@@ -237,7 +259,7 @@ def updateLocation(user_id):
         except:
             raise exceptions.InternalServerError()
 
-#working
+# update radius by user id
 @main.route('/users/<int:user_id>/radius',  methods=['PATCH'])
 def updateRadius(user_id):
     if request.method == 'PATCH':
