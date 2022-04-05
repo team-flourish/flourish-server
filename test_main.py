@@ -62,3 +62,25 @@ def test_getAllRatings(client):
     assert res.status == '200 OK'  
     assert res.json[0]['rating'] == 1
 
+def test_register(client):
+    mock_data = json.dumps(
+        {
+        "category_id": 2,
+        "date_time": "Tue, 05 Apr 2022 00:00:00 GMT",
+        "description": 'Tomatoes',
+        "expiry": "03/04/2022",
+        "image": "LINK",
+        "is_retail": 1,
+        "location": "SE18",
+        "price": 2.99,
+        #"product_id": 1,
+        "user_id": 1
+        }
+    )
+    mock_headers = {'Content-Type': 'application/json'}
+    res = client.post('/products', data=mock_data, headers=mock_headers)
+    assert res.status == '201 CREATED'
+    res = client.get("/products")
+    assert res.status == '200 OK'
+    #assert len(res.json) == 14
+    assert res.json[1]['description'] == 'Carrots'
