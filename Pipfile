@@ -16,6 +16,7 @@ flask-login = "*"
 flask-bcrypt = "*"
 flask-wtf = "*"
 wtforms = "*"
+pytest = "*"
 
 [dev-packages]
 
