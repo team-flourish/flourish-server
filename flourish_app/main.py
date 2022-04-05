@@ -286,8 +286,9 @@ def updateLocation(user_id):
     if request.method == 'PATCH':
         try: 
             req = request.get_json()
-            updated_location = req['updated_location']
-            db.session.query(Users).filter(Users.id == user_id).update({Users.location: updated_location})
+            updated_longitude = req['updated_longitude']
+            updated_latitude = req['updated_longitude']
+            db.session.query(Users).filter(Users.id == user_id).update({Users.longitude: updated_longitude, Users.latitude: updated_latitude})
             db.session.commit()
             return f"Location sucessfully updated!", 201
         except:
