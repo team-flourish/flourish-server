@@ -45,8 +45,9 @@ class Products(db.Model):
     expiry = db.Column(db.String(15))
     description = db.Column(db.String(100))
     image = db.Column(db.String(500))
+    date_time = db.Column(db.Date, nullable=False)
 
-    def __init__(self, user_id, category_id, is_retail, location, price, expiry, description, image):
+    def __init__(self, user_id, category_id, is_retail, location, price, expiry, description, image, date_time):
         self.user_id = user_id
         self.category_id = category_id
         self.is_retail = is_retail
@@ -55,6 +56,7 @@ class Products(db.Model):
         self.expiry = expiry
         self.description = description
         self.image = image
+        self.date_time = date_time
 
     def __repr__(self):
         return '<id {}>'.format(self.product_id)
@@ -69,7 +71,8 @@ class Products(db.Model):
             'price': self.price,
             'expiry': self.expiry,
             'description': self.description,
-            'image': self.image
+            'image': self.image,
+            'date_time': self.date_time
         }
 
 class Productratings(db.Model):
