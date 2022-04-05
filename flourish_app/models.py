@@ -8,17 +8,17 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(100))
     passwrd = db.Column(db.String(10000))
     rating = db.Column(db.Float)
-    rating_num = db.Column(db.Integer)
-    location = db.Column(db.String(7))
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)
     radius = db.Column(db.Float)
 
-    def __init__(self, username, email, passwrd, rating, rating_num, location, radius):
+    def __init__(self, username, email, passwrd, rating, longitude, latitude, radius):
         self.username = username
         self.email = email
         self.passwrd = passwrd
         self.rating = rating
-        self.rating_num = rating_num
-        self.location = location
+        self.longitude = longitude
+        self.latitude = latitude
         self.radius = radius
     
     def __repr__(self):
@@ -31,8 +31,8 @@ class Users(db.Model, UserMixin):
             'email': self.email,
             'passwrd': self.passwrd,
             'rating': self.rating,
-            'rating_num': self.rating_num,
-            'location': self.location,
+            'longitude': self.longitude,
+            'latitude': self.latitude,
             'radius': self.radius
         }
 
@@ -41,18 +41,20 @@ class Products(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'))
     is_retail = db.Column(db.Boolean)
-    location = db.Column(db.String(7))
+    longitude = db.Column(db.Float)
+    latitude = db.Column(db.Float)
     price = db.Column(db.Float)
     expiry = db.Column(db.String(15))
     description = db.Column(db.String(100))
     image = db.Column(db.String(500))
     date_time = db.Column(db.Date, nullable=False)
 
-    def __init__(self, user_id, category_id, is_retail, location, price, expiry, description, image):
+    def __init__(self, user_id, category_id, is_retail, longitude, latitude, price, expiry, description, image):
         self.user_id = user_id
         self.category_id = category_id
         self.is_retail = is_retail
-        self.location = location
+        self.longitude = longitude
+        self.latitude = latitude
         self.price = price
         self.expiry = expiry
         self.description = description
@@ -68,7 +70,8 @@ class Products(db.Model):
             'user_id': self.user_id, 
             'category_id': self.category_id,
             'is_retail': self.is_retail,
-            'location': self.location,
+            'longitude': self.longitude,
+            'latitude': self.latitude,
             'price': self.price,
             'expiry': self.expiry,
             'description': self.description,

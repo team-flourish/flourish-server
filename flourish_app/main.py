@@ -1,4 +1,4 @@
-from unicodedata import name
+from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from flask_cors import CORS
@@ -48,12 +48,12 @@ def register():
     req = request.get_json()
     hashed_password = generate_password_hash(req['passwrd'])
     new_user =  Users(
-        username = req['username'], 
-        passwrd = hashed_password, 
+        username = req['username'],
+        passwrd = hashed_password,
         email = req['email'],
-        rating = 0, 
-        rating_num = 0, 
-        location = 'ABCD', 
+        rating = 0,
+        longitude= 0,
+        latitude= 0,
         radius = 2
     )
     db.session.add(new_user)
@@ -74,7 +74,20 @@ def getAllProducts():
     if request.method == 'GET':
         try: 
             allProducts = Products.query.all()
-            return  jsonify([e.serialize() for e in allProducts])
+
+            products_array = [e.serialize() for e in allProducts]
+
+            date = datetime.utcnow()
+            date_now = datetime.date(date)
+            date_minus_1 = date_now - timedelta(days=1)
+
+            products_to_send_arr = []
+
+            for i in products_array:
+                if i['date_time'] > date_minus_1:
+                    products_to_send_arr.append(i)
+
+            return  jsonify(products_to_send_arr)
         except exceptions.NotFound:
             raise exceptions.NotFound("There are no products to view at the moment!")
         except:
@@ -82,7 +95,7 @@ def getAllProducts():
 
     elif request.method == 'POST':
     # format of request 
-    # { "user_id": 1, "description": "Tomatoes", "category_id": 2, "is_retail": "True", "location": "SE18", "price": 2.99, "expiry": "02/04/2022", "image": "LINK"}
+    # { "user_id": 1, "description": "Tomatoes", "category_id": 2, "is_retail": 1, "longitude": 51.5014, "latitude": 0.1419, "price": 2.99, "expiry": "02/04/2022", "image": "LINK"}
         try:
             req = request.get_json()
             new_product = Products(
@@ -90,7 +103,8 @@ def getAllProducts():
                 description = req['description'], 
                 category_id = req['category_id'],
                 is_retail = req['is_retail'], 
-                location = req['location'], 
+                longitude = req['longitude'],
+                latitude = req['latitude'],  
                 price = req['price'], 
                 expiry = req['expiry'], 
                 image = req['image']
@@ -114,7 +128,7 @@ def getProductById(product_id):
     except:
         raise exceptions.InternalServerError()
 
-#wget products by category
+# get products by category
 @main.get('/products/category/<int:category_id>')
 ##@jwt_required()
 def getProductByCategoryId(category_id):
@@ -126,7 +140,7 @@ def getProductByCategoryId(category_id):
     except:
         raise exceptions.InternalServerError()
 
-#get all users
+# get all users
 @main.get('/users')
 ##@jwt_required()
 def getAllUsers():
@@ -241,9 +255,9 @@ def getAllRatings():
         except:
             raise exceptions.InternalServerError()
 
-#get ratings by id of user rating them
+# get ratings by id of user rating them
 @main.get('/ratings/users/<int:user_id>')
-@jwt_required
+#@jwt_required
 def getRatingByUserId(user_id):
     try: 
         rating = db.session.query(Productratings).filter(Productratings.user_id == user_id)
@@ -253,7 +267,7 @@ def getRatingByUserId(user_id):
     except:
         raise exceptions.InternalServerError()
 
-#get ratings by product id and id of user rating them
+# get ratings by product id and id of user rating them
 @main.get('/ratings/users/<int:user_id>/products/<int:product_id>')
 #@jwt_required()
 def getRatingById(user_id, product_id):
