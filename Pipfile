@@ -17,6 +17,9 @@ flask-bcrypt = "*"
 flask-wtf = "*"
 wtforms = "*"
 pytest = "*"
+coverage = "*"
+pytest-cov = "*"
+
 
 [dev-packages]
 
