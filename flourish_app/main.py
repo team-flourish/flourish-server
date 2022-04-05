@@ -4,8 +4,8 @@ from flask_cors import CORS
 from werkzeug import exceptions
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flourish_app.extensions import db
-from flourish_app.models import Productratings, Products, Users, Category
+from .extensions import db
+from .models import Productratings, Products, Users, Category
 
 
 main = Blueprint('main', __name__) 
@@ -60,7 +60,7 @@ def logout():
     logout_user  
     return f"Logged out sucessfully!", 201
 
-#working
+# get all products or post a product
 @main.route('/products', methods=['GET','POST'])
 def getAllProducts():
     if request.method == 'GET':
@@ -75,7 +75,7 @@ def getAllProducts():
     elif request.method == 'POST':
     # format of request 
     # { "user_id": 1, "description": "Tomatoes", "category_id": 2, "is_retail": "True", "location": "SE18", "price": 2.99, "expiry": "02/04/2022", "image": "LINK"}
-        # try:
+        try:
             req = request.get_json()
             new_product = Products(
                 user_id = req['user_id'],
@@ -91,10 +91,10 @@ def getAllProducts():
             db.session.commit()
             return f"New product was added!", 201
 
-        # except: 
-        #     raise exceptions.InternalServerError()
+        except: 
+            raise exceptions.InternalServerError()
 
-#working
+# get products by product id
 @main.get('/products/<int:product_id>')
 def getProductById(product_id):
     try: 
@@ -105,7 +105,7 @@ def getProductById(product_id):
     except:
         raise exceptions.InternalServerError()
 
-#working
+#wget products by category
 @main.get('/products/category/<int:category_id>')
 def getProductByCategoryId(category_id):
     try: 
@@ -116,7 +116,7 @@ def getProductByCategoryId(category_id):
     except:
         raise exceptions.InternalServerError()
 
-#working
+#get all users
 @main.get('/users')
 def getAllUsers():
     try: 
@@ -127,7 +127,7 @@ def getAllUsers():
     except:
         raise exceptions.InternalServerError()
 
-#working
+# get all products a user has posted
 @main.get('/users/<int:user_id>/products')
 def getAllUsersProductsById(user_id):
     try: 
@@ -138,7 +138,7 @@ def getAllUsersProductsById(user_id):
     except:
         raise exceptions.InternalServerError()
 
-#working
+# get/delete user by id
 @main.route('/users/<int:user_id>', methods=['GET', 'DELETE'])
 def handleUserById(user_id):
     if request.method == 'GET':
@@ -159,7 +159,7 @@ def handleUserById(user_id):
         except:
             raise exceptions.InternalServerError()
 
-#working
+# if a user has not rated a product add that rating to the db, if they have patch their current rating with the new one
 @main.route('/rating/vote', methods= ['POST'])
 def vote():
 
@@ -212,7 +212,7 @@ def vote():
         except: 
             raise exceptions.InternalServerError()
 
-#working
+# get all ratings
 @main.route('/ratings',  methods=['GET'])
 def getAllRatings():
     if request.method == 'GET':
@@ -224,7 +224,29 @@ def getAllRatings():
         except:
             raise exceptions.InternalServerError()
 
-#working
+#get ratings by id of user rating them
+@main.get('/ratings/users/<int:user_id>')
+def getRatingByUserId(user_id):
+    try: 
+        rating = db.session.query(Productratings).filter(Productratings.user_id == user_id)
+        return  jsonify([e.serialize() for e in rating])
+    except exceptions.NotFound:
+        raise exceptions.NotFound("There are no ratings to view at the moment!")
+    except:
+        raise exceptions.InternalServerError()
+
+#get ratings by product id and id of user rating them
+@main.get('/ratings/users/<int:user_id>/products/<int:product_id>')
+def getRatingById(user_id, product_id):
+    try: 
+        rating = db.session.query(Productratings).filter(Productratings.user_id == user_id).filter(Productratings.product_id == product_id)
+        return  jsonify([e.serialize() for e in rating])
+    except exceptions.NotFound:
+        raise exceptions.NotFound("There are no ratings to view at the moment!")
+    except:
+        raise exceptions.InternalServerError()
+
+# update location by user id
 @main.route('/users/<int:user_id>/location',  methods=['PATCH'])
 def updateLocation(user_id):
     if request.method == 'PATCH':
@@ -237,7 +259,7 @@ def updateLocation(user_id):
         except:
             raise exceptions.InternalServerError()
 
-#working
+# update radius by user id
 @main.route('/users/<int:user_id>/radius',  methods=['PATCH'])
 def updateRadius(user_id):
     if request.method == 'PATCH':
