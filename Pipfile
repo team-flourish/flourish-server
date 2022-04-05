@@ -19,6 +19,9 @@ wtforms = "*"
 pytest = "*"
 coverage = "*"
 pytest-cov = "*"
+pyjwt = "*"
+flask-jwt-extended = "*"
+flask-executor = "*"
 
 
 [dev-packages]

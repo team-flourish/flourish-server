@@ -1,3 +1,4 @@
+from unicodedata import name
 from flask import Blueprint, request, jsonify
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from flask_cors import CORS
@@ -6,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from flourish_app.extensions import db
 from flourish_app.models import Productratings, Products, Users, Category
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required
 
 
 main = Blueprint('main', __name__) 
@@ -13,18 +15,18 @@ CORS(main)
 
 
 # bcrypt = Bcrypt(main)
-login_manager = LoginManager(main)
-login_manager.init_app(main)
-login_manager.login_view = "login" #our app and flask login to work together
+# login_manager = LoginManager(main)
+# login_manager.init_app(main)
+# login_manager.login_view = "login" #our app and flask login to work together
 
 @main.route("/")
 def hello():
     return "Hello World!"
 
-@login_manager.user_loader #used to reload object from user id stored in session
+#@login_manager.user_loader  used to reload object from user id stored in session
 def load_user(user_id):
     return Users.query.get(int(user_id))
-
+JWTManager(main)
 #working
 @main.route("/login", methods = ['POST', "GET"])
 def login():
@@ -32,7 +34,14 @@ def login():
     user = Users.query.filter_by(email = req['email']).first()
     if user:
         if check_password_hash(user.passwrd, req['passwrd']):
-            login_user(user)
+            #login_user(user)
+            access_token = create_access_token(identity=user.email)
+            refresh_token = create_refresh_token(identity= user.email)
+            return {jsonify(
+                {"access token": access_token,
+                "refresh token": refresh_token
+                }
+            )}
         return f"Login sucessful!", 200
             
 #working
