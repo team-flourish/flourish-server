@@ -40,7 +40,7 @@ def login():
                 "refresh token": refresh_token
                 }
             )
-    return f"Login sucessful!", 200
+    return f"Login sucessful!", 201
             
 #working
 @main.route("/register", methods = ['POST', "GET"])
