@@ -90,8 +90,8 @@ def getAllProducts():
             return  jsonify(products_to_send_arr)
         except exceptions.NotFound:
             raise exceptions.NotFound("There are no products to view at the moment!")
-        # except:
-        #     raise exceptions.InternalServerError()
+        except:
+            raise exceptions.InternalServerError()
 
     elif request.method == 'POST':
     # format of request 
@@ -127,7 +127,7 @@ def getProductById(product_id):
     except:
         raise exceptions.InternalServerError()
 
-#wget products by category
+# get products by category
 @main.get('/products/category/<int:category_id>')
 def getProductByCategoryId(category_id):
     try: 
@@ -138,7 +138,7 @@ def getProductByCategoryId(category_id):
     except:
         raise exceptions.InternalServerError()
 
-#get all users
+# get all users
 @main.get('/users')
 def getAllUsers():
     try: 
@@ -246,7 +246,7 @@ def getAllRatings():
         except:
             raise exceptions.InternalServerError()
 
-#get ratings by id of user rating them
+# get ratings by id of user rating them
 @main.get('/ratings/users/<int:user_id>')
 def getRatingByUserId(user_id):
     try: 
@@ -257,7 +257,7 @@ def getRatingByUserId(user_id):
     except:
         raise exceptions.InternalServerError()
 
-#get ratings by product id and id of user rating them
+# get ratings by product id and id of user rating them
 @main.get('/ratings/users/<int:user_id>/products/<int:product_id>')
 def getRatingById(user_id, product_id):
     try: 
