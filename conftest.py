@@ -6,3 +6,4 @@ def client():
     app = create_app()
 
     yield app.test_client()
+
