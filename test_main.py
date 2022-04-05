@@ -44,7 +44,7 @@ def test_getProductByCategoryId(client):
 def test_getAllUsers(client):
     res = client.get("/users")
     assert res.status == '200 OK'
-    assert res.json[1]['email'] == 'zahra@email.co.uk'
+    assert res.json[0]['email'] == 'zahra@email.co.uk'
 
 def test_getAllUsersProductsById(client):
     res = client.get("/users/1/products")
@@ -54,11 +54,58 @@ def test_getAllUsersProductsById(client):
 def test_handleUserById(client):
     res = client.get("/users/1")
     assert res.status == '200 OK'  
-    assert res.json[0]['location'] == 'E152RZ'
+    assert res.json[0]['location'] == 'BN9'
+
+    res = client.delete("/users/5")
+    assert res.status == '204 NO CONTENT'  
+
+def test_vote(client):
+    mock_data = json.dumps(
+        {    
+            "product_id": 1,
+            "user_id": 1,
+            "rating": 4.0
+        }
+    )
+    mock_headers = {'Content-Type': 'application/json'}
+    res = client.post('/rating/vote', data=mock_data, headers=mock_headers)
+    assert res.status == '201 CREATED'
 
 
 def test_getAllRatings(client):
     res = client.get("/ratings")
     assert res.status == '200 OK'  
-    assert res.json[0]['rating'] == 1
+    assert res.json[0]['rating'] == 4
+
+def test_getRatingByUserId(client):
+    res = client.get("/ratings/users/1")
+    assert res.status == '200 OK'  
+    assert res.json[0]['rating'] == 4
+
+def test_getRatingById(client):
+    res = client.get("/ratings/users/1/products/1")
+    assert res.status == '200 OK'  
+    assert res.json[0]['rating'] == 4
+
+def test_updateLocation(client):
+    mock_data = json.dumps(
+        {
+        "updated_location": "BN9"
+        }
+    )
+    mock_headers = {'Content-Type': 'application/json'}
+    res = client.patch('/users/1/location', data=mock_data, headers=mock_headers)
+    assert res.status == '201 CREATED'
+
+def test_updateRadius(client):
+    mock_data = json.dumps(
+        {
+        "updated_radius": 3.0
+        }
+    )
+    mock_headers = {'Content-Type': 'application/json'}
+    res = client.patch('/users/1/radius', data=mock_data, headers=mock_headers)
+    assert res.status == '201 CREATED'
+
+
 

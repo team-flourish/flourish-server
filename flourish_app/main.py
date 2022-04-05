@@ -243,7 +243,7 @@ def getAllRatings():
 
 #get ratings by id of user rating them
 @main.get('/ratings/users/<int:user_id>')
-@jwt_required
+#@jwt_required
 def getRatingByUserId(user_id):
     try: 
         rating = db.session.query(Productratings).filter(Productratings.user_id == user_id)
