@@ -194,7 +194,7 @@ def handleUserById(user_id):
 def vote():
 
     if request.method == 'POST':
-        # try:
+        try:
             req = request.get_json()
             new_product_rating = Productratings(
                 product_id = req['product_id'], 
@@ -254,8 +254,8 @@ def vote():
             db.session.commit()
             return f"Rating was posted!", 201
 
-        # except: 
-        #     raise exceptions.InternalServerError()
+        except: 
+            raise exceptions.InternalServerError()
 
 # get all ratings
 @main.route('/ratings',  methods=['GET'])
