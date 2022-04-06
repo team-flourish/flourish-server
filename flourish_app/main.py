@@ -307,3 +307,14 @@ def updateRadius(user_id):
             return f"Radius sucessfully updated!", 201
         except:
             raise exceptions.InternalServerError()
+
+@main.get('/products/categories')
+def getCategories():
+    if request.method == 'GET':
+        try:
+            allCategories = Category.query.all()
+            return jsonify([e.serialize() for e in allCategories])
+        except exceptions.NotFound:
+            raise exceptions.NotFound("Categories not found!")
+        except:
+            raise exceptions.InternalServerError()
