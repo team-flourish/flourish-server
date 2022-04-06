@@ -173,14 +173,13 @@ def getAllUsers():
 # get all products a user has posted
 @main.get('/users/<int:user_id>/products')
 # @jwt_required()
-def getAllUsersProductsById(user_id):
-    try: 
-        allUsersProducts = db.session.query(Products).filter(Products.user_id == user_id)
-        return  jsonify([e.serialize() for e in allUsersProducts])
-    except exceptions.NotFound:
-        raise exceptions.NotFound("There are no users to view at the moment!")
-    except:
-        raise exceptions.InternalServerError()
+def getAllUsersProductsById(user_id):   
+    allUsersProducts = db.session.query(Products).filter(Products.user_id == user_id)
+    array = [e.serialize() for e in allUsersProducts]
+    if len(array) != 0:
+        return jsonify(array)
+    else:
+        return exceptions.NotFound("This user had no products or they do no exist!")
 
 # get/delete user by id
 @main.route('/users/<int:user_id>', methods=['GET', 'DELETE'])
