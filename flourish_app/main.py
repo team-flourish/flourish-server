@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, logout_user
@@ -150,13 +151,12 @@ def getProductById(product_id):
 @main.get('/products/category/<int:category_id>')
 # @jwt_required()
 def getProductByCategoryId(category_id):
-    try: 
-        products = db.session.query(Products).filter(Products.category_id == category_id)
-        return jsonify([e.serialize() for e in products])
-    except exceptions.NotFound:
-        raise exceptions.NotFound("Products not found!")
-    except:
-        raise exceptions.InternalServerError()
+    products = db.session.query(Products).filter(Products.category_id == category_id)
+    array = [e.serialize() for e in products]
+    if len(array) != 0:
+        return jsonify(array)
+    else:
+        return exceptions.NotFound("Category does not exist, or there are no products in this category!")
 
 # get all users
 @main.get('/users')
