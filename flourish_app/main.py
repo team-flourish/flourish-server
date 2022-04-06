@@ -1,14 +1,14 @@
 from asyncio.windows_events import NULL
 from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify
-from flask_login import login_required, logout_user
+from flask_login import login_required, login_user, logout_user, LoginManager
 from flask_cors import CORS
 from werkzeug import exceptions
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .extensions import db
 from .models import Productratings, Products, Users, Category
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required
 
 main = Blueprint('main', __name__) 
 CORS(main)
