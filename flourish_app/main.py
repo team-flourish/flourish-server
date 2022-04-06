@@ -39,13 +39,7 @@ def login():
                 refresh_token = create_refresh_token(identity= user.email)
                 return (
                     {"access_token": access_token,
-                    "refresh_token": refresh_token,
-                    "user_id": user.id,
-                    "location": {
-                        "latitude": user.latitude,
-                        "longitude": user.longitude 
-                    },
-                    "radius": user.radius
+                    "refresh_token": refresh_token
                     }
                 )
         return f"Login failed.", 401
