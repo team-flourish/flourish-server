@@ -1,13 +1,17 @@
+from asyncio.windows_events import NULL
 from datetime import datetime, timedelta
 from flask import Blueprint, request, jsonify
-from flask_login import login_required, logout_user
+from flask_login import login_required, login_user, logout_user, LoginManager
 from flask_cors import CORS
 from werkzeug import exceptions
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from .extensions import db
 from .models import Productratings, Products, Users, Category
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, verify_jwt_in_request, decode_token
+
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, verify_jwt_in_request, decode_token
+
+
 
 main = Blueprint('main', __name__) 
 CORS(main)
@@ -189,7 +193,7 @@ def getAllUsers():
 # get all products a user has posted
 @main.get('/users/<int:user_id>/products')
 # @jwt_required()
-def getAllUsersProductsById(user_id):
+def getAllUsersProductsById(user_id):   
     try: 
         allUsersProducts = db.session.query(Products).filter(Products.user_id == user_id)
         return  jsonify([e.serialize() for e in allUsersProducts])
