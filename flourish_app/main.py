@@ -106,6 +106,14 @@ def getAllProducts():
 
             for i in products_array:
                 if i['date_time'] > date_minus_1:
+                    id_of_user = i['user_id']
+
+                    user = Users.query.get_or_404(id_of_user).serialize()
+
+                    username = user['username']
+
+                    i['username'] = username
+                    
                     products_to_send_arr.append(i)
 
             return  jsonify(products_to_send_arr)
@@ -143,7 +151,17 @@ def getAllProducts():
 def getProductById(product_id):
     try: 
         product = Products.query.get_or_404(product_id)
-        return  jsonify([product.serialize()])
+        product_json = product.serialize()
+
+        id_of_user = product_json['user_id']
+
+        user = Users.query.get_or_404(id_of_user).serialize()
+
+        username = user['username']
+
+        product_json['username'] = username
+
+        return  jsonify(product_json)
     except exceptions.NotFound:
         raise exceptions.NotFound("Product not found!")
     except:
@@ -239,22 +257,37 @@ def vote():
 
             id_of_user_they_are_rating = product_they_are_rating['user_id']
 
-            #calculate the rating
-            #count of all productRatings that have the user id
-            all_users_ratings = db.session.query(Productratings).filter(Productratings.user_id == id_of_user_they_are_rating)
+            # get a list of all product ids based on id_of_user_they_are_rating
+            all_product_ids = db.session.query(Products).filter(Products.user_id == id_of_user_they_are_rating)
+
+            # array of all user 2's products
+            all_users_products_array = []
+            for row in all_product_ids:
+                all_users_products_array.append(row.serialize())
+            print("all_users_products_array", all_users_products_array)
+
+            # array of all product ids
+            all_users_products_id_array = []
+            for i in range(0, len(all_users_products_array)):
+                all_users_products_id_array.append(all_users_products_array[i]['product_id'])
+            print("all_users_products_id_array", all_users_products_id_array)
 
             all_users_ratings_array = []
-            for row in all_users_ratings:
-                all_users_ratings_array.append(row.serialize())
+            for i in all_users_products_id_array:
+                all_users_ratings =  db.session.query(Productratings).filter(Productratings.product_id == i)
+                for row in all_users_ratings:
+                    all_users_ratings_array.append(row.serialize())
+            print("all_users_ratings_array", all_users_ratings_array)
 
-            count = db.session.query(Productratings).filter(Productratings.user_id == id_of_user_they_are_rating).count()
-            #for the total of these productRatings add up all the rating keys / count * 100
+            count = len(all_users_ratings_array)
 
             rating_count = 0
             for i in range(0, len(all_users_ratings_array)):
                 rating_count = rating_count + all_users_ratings_array[i]['rating']
+            print("rating_count", rating_count)
 
             updated_rating = (rating_count/count)
+            print("updated_rating", updated_rating)
 
             db.session.query(Users).filter(Users.id == id_of_user_they_are_rating).update({Users.rating: updated_rating})
             db.session.commit()
