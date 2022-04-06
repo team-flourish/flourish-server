@@ -9,15 +9,15 @@ def test_index(client):
 def test_getAllProducts(client):
     mock_data = json.dumps(
         {
-        "category_id": 2,
+        "category_id": 7,
         "date_time": "Tue, 05 Apr 2022 00:00:00 GMT",
         "description": 'Tomatoes',
         "expiry": "03/04/2022",
         "image": "LINK",
         "is_retail": 1,
-        "location": "SE18",
+        "longitude": 51.5014,
+        "latitude":  0.1419,
         "price": 2.99,
-        #"product_id": 1,
         "user_id": 1
         }
     )
@@ -27,36 +27,36 @@ def test_getAllProducts(client):
     res = client.get("/products")
     assert res.status == '200 OK'
     #assert len(res.json) == 14
-    assert res.json[1]['description'] == 'Carrots'
+    assert res.json[0]['description'] == 'Oranges'
 
 def test_getProductById(client):
 
     res = client.get("/products/1")
     assert res.status == '200 OK'
     assert len(res.json) == 1
-    assert res.json[0]['description'] == 'Tomatoes'
+    assert res.json[0]['description'] == 'Oranges'
 
 def test_getProductByCategoryId(client):
-    res = client.get("/products/category/2")
+    res = client.get("/products/category/5")
     assert res.status == '200 OK'
-    assert res.json[1]['description'] == 'Carrots'
+    assert res.json[0]['description'] == 'Oranges'
 
 def test_getAllUsers(client):
     res = client.get("/users")
     assert res.status == '200 OK'
-    assert res.json[0]['email'] == 'zahra@email.co.uk'
+    assert res.json[0]['email'] == 'hamza@hotmail.com'
 
 def test_getAllUsersProductsById(client):
     res = client.get("/users/1/products")
     assert res.status == '200 OK'   
-    assert res.json[0]['expiry'] == '03/04/2022'
+    assert res.json[0]['expiry'] == '02/04/2022'
 
 def test_handleUserById(client):
     res = client.get("/users/1")
     assert res.status == '200 OK'  
-    assert res.json[0]['location'] == 'BN9'
+    assert res.json[0]['id'] == 1
 
-    res = client.delete("/users/5")
+    res = client.delete("/users/4")
     assert res.status == '204 NO CONTENT'  
 
 def test_vote(client):
@@ -87,15 +87,15 @@ def test_getRatingById(client):
     assert res.status == '200 OK'  
     assert res.json[0]['rating'] == 4
 
-def test_updateLocation(client):
-    mock_data = json.dumps(
-        {
-        "updated_location": "BN9"
-        }
-    )
-    mock_headers = {'Content-Type': 'application/json'}
-    res = client.patch('/users/1/location', data=mock_data, headers=mock_headers)
-    assert res.status == '201 CREATED'
+# def test_updateLocation(client):
+#     mock_data = json.dumps(
+#         {
+#         "updated_location": "BN9"
+#         }
+#     )
+#     mock_headers = {'Content-Type': 'application/json'}
+#     res = client.patch('/users/1/location', data=mock_data, headers=mock_headers)
+#     assert res.status == '201 CREATED'
 
 def test_updateRadius(client):
     mock_data = json.dumps(
@@ -112,22 +112,22 @@ def test_updateRadius(client):
 def test_register(client):
     mock_data = json.dumps(
         {
-        "category_id": 2,
-        "date_time": "Tue, 05 Apr 2022 00:00:00 GMT",
-        "description": 'Tomatoes',
-        "expiry": "03/04/2022",
-        "image": "LINK",
-        "is_retail": 1,
-        "location": "SE18",
-        "price": 2.99,
-        #"product_id": 1,
-        "user_id": 1
+        "email": "test2@hotmail.com",
+        "passwrd": "test",
+        "username": "testing"
         }
     )
     mock_headers = {'Content-Type': 'application/json'}
-    res = client.post('/products', data=mock_data, headers=mock_headers)
+    res = client.post('/register', data=mock_data, headers=mock_headers)
     assert res.status == '201 CREATED'
-    res = client.get("/products")
+
+def test_login(client):
+    mock_data = json.dumps(
+        {
+        "email": "test2@hotmail.com",
+        "passwrd": "test",
+        }
+    )
+    mock_headers = {'Content-Type': 'application/json'}
+    res = client.post('/login', data=mock_data, headers=mock_headers)
     assert res.status == '200 OK'
-    #assert len(res.json) == 14
-    assert res.json[1]['description'] == 'Carrots'
