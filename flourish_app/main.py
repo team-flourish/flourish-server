@@ -218,7 +218,7 @@ def vote():
 
             id_of_user_they_are_rating = product_they_are_rating['user_id']
 
-            # get a list of all product ids based on id_of_user_they_Are_ratin
+            # get a list of all product ids based on id_of_user_they_are_rating
             all_product_ids = db.session.query(Products).filter(Products.user_id == id_of_user_they_are_rating)
 
             # array of all user 2's products
