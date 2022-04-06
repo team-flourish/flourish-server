@@ -106,9 +106,11 @@ class Productratings(db.Model):
 class Category(db.Model):
     category_id = db.Column(db.Integer, primary_key=True)
     category_name  = db.Column(db.String(100))
+    color = db.Column(db.String(7))
 
-    def __init__(self, category_name):
+    def __init__(self, category_name, color):
         self.category_name = category_name
+        self.color = color
 
     def __repr__(self):
         return '<id {}>'.format(self.category_id)
@@ -116,5 +118,6 @@ class Category(db.Model):
     def serialize(self):
         return {
             'category_id': self.category_id, 
-            'category_name': self.category_name
+            'category_name': self.category_name,
+            'color': self.color
         }
