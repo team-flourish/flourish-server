@@ -85,6 +85,14 @@ def getAllProducts():
 
             for i in products_array:
                 if i['date_time'] > date_minus_1:
+                    id_of_user = i['user_id']
+
+                    user = Users.query.get_or_404(id_of_user).serialize()
+
+                    username = user['username']
+
+                    i['username'] = username
+                    
                     products_to_send_arr.append(i)
 
             return  jsonify(products_to_send_arr)
@@ -122,7 +130,17 @@ def getAllProducts():
 def getProductById(product_id):
     try: 
         product = Products.query.get_or_404(product_id)
-        return  jsonify([product.serialize()])
+        product_json = product.serialize()
+
+        id_of_user = product_json['user_id']
+
+        user = Users.query.get_or_404(id_of_user).serialize()
+
+        username = user['username']
+
+        product_json['username'] = username
+
+        return  jsonify(product_json)
     except exceptions.NotFound:
         raise exceptions.NotFound("Product not found!")
     except:
