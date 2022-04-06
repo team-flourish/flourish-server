@@ -8,7 +8,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from .extensions import db
 from .models import Productratings, Products, Users, Category
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required
+
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, verify_jwt_in_request, decode_token
+
+
 
 main = Blueprint('main', __name__) 
 CORS(main)
@@ -29,19 +32,34 @@ def load_user(user_id):
 #working
 @main.route("/login", methods = ['POST', "GET"])
 def login():
-    req = request.get_json()
-    user = Users.query.filter_by(email = req['email']).first()
-    if user:
-        if check_password_hash(user.passwrd, req['passwrd']):
-            #login_user(user)
-            access_token = create_access_token(identity=user.email)
-            refresh_token = create_refresh_token(identity= user.email)
-            return (
-                {"access token": access_token,
-                "refresh token": refresh_token
-                }
-            )
-    return f"Login sucessful!", 201
+    if request.method == 'POST':
+        req = request.get_json()
+        user = Users.query.filter_by(email = req['email']).first()
+        if user:
+            print(user.passwrd, req['passwrd'])
+            if check_password_hash(user.passwrd, req['passwrd']):
+                #login_user(user)
+                access_token = create_access_token(identity=user.email)
+                refresh_token = create_refresh_token(identity= user.email)
+                return (
+                    {"access_token": access_token,
+                    "refresh_token": refresh_token
+                    }
+                )
+        return f"Login failed.", 401
+    if request.method == 'GET':
+        verify_jwt_in_request()
+        email = decode_token(request.headers["Authorization"].split(" ")[1])['sub']
+        user = Users.query.filter_by(email = email).first()
+        return {
+            "id": user.id,
+            "name": user.username,
+            "location": {
+                "latitude": user.latitude,
+                "longitude": user.longitude
+            },
+            "radius": user.radius
+        }
             
 #working
 @main.route("/register", methods = ['POST', "GET"])
@@ -93,6 +111,7 @@ def getAllProducts():
                     username = user['username']
 
                     i['username'] = username
+                    i['user_rating'] = user['rating']
                     
                     products_to_send_arr.append(i)
 
