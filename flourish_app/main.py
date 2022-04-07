@@ -10,6 +10,8 @@ from .models import Productratings, Products, Users, Category
 
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, verify_jwt_in_request, decode_token
 
+
+
 main = Blueprint('main', __name__) 
 CORS(main)
 
