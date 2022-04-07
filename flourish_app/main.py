@@ -158,6 +158,7 @@ def getProductById(product_id):
         username = user['username']
 
         product_json['username'] = username
+        product_json['user_rating'] = user['rating']
 
         return  jsonify(product_json)
     except exceptions.NotFound:
@@ -195,7 +196,28 @@ def getAllUsers():
 def getAllUsersProductsById(user_id):   
     try: 
         allUsersProducts = db.session.query(Products).filter(Products.user_id == user_id)
-        return  jsonify([e.serialize() for e in allUsersProducts])
+        products_array = [e.serialize() for e in allUsersProducts]
+
+        date_now = datetime.utcnow()
+        print("date_now", date_now)
+        date_minus_1 = date_now - timedelta(days=1)
+        print("minus", date_minus_1)
+        products_to_send_arr = []
+
+        for i in products_array:
+            if i['date_time'] > date_minus_1:
+                id_of_user = i['user_id']
+
+                user = Users.query.get_or_404(id_of_user).serialize()
+
+                username = user['username']
+
+                i['username'] = username
+                i['user_rating'] = user['rating']
+                
+                products_to_send_arr.append(i)
+
+        return  jsonify(products_to_send_arr)
     except exceptions.NotFound:
         raise exceptions.NotFound("There are no users to view at the moment!")
     except:
