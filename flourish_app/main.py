@@ -108,6 +108,7 @@ def getAllProducts():
                     username = user['username']
 
                     i['username'] = username
+                    i['user_rating'] = user['rating']
                     
                     products_to_send_arr.append(i)
 
