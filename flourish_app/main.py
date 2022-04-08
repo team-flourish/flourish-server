@@ -144,27 +144,43 @@ def getAllProducts():
             raise exceptions.InternalServerError()
 
 # get products by product id
-@main.get('/products/<int:product_id>')
+@main.route('/products/<int:product_id>', methods=['GET', 'DELETE'])
 # @jwt_required()
 def getProductById(product_id):
-    try: 
-        product = Products.query.get_or_404(product_id)
-        product_json = product.serialize()
+    if request.method == 'GET':
+        try: 
+            product = Products.query.get_or_404(product_id)
+            product_json = product.serialize()
 
-        id_of_user = product_json['user_id']
+            id_of_user = product_json['user_id']
 
-        user = Users.query.get_or_404(id_of_user).serialize()
+            user = Users.query.get_or_404(id_of_user).serialize()
 
-        username = user['username']
+            username = user['username']
 
-        product_json['username'] = username
-        product_json['user_rating'] = user['rating']
+            product_json['username'] = username
+            product_json['user_rating'] = user['rating']
 
-        return  jsonify(product_json)
-    except exceptions.NotFound:
-        raise exceptions.NotFound("Product not found!")
-    except:
-        raise exceptions.InternalServerError()
+            return  jsonify(product_json)
+        except exceptions.NotFound:
+            raise exceptions.NotFound("Product not found!")
+        except:
+            raise exceptions.InternalServerError()
+    elif request.method == 'DELETE':
+        try:
+            email = decode_token(request.headers["Authorization"].split(" ")[1])['sub']
+            user = Users.query.filter_by(email = email).first()
+            product = Products.query.get_or_404(product_id)
+            if user.id == product.user_id:
+                db.session.delete(product)
+                db.session.commit()
+                return f"Product was sucessfully deleted!", 204
+            else:
+                return f"Not authorized", 403
+        except exceptions.NotFound:
+            raise exceptions.NotFound("Product not found!")
+        except:
+            raise exceptions.InternalServerError()
 
 # get products by category
 @main.get('/products/category/<int:category_id>')
